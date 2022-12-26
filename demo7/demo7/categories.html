@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Editar Categorias</title>
+    <link rel="stylesheet" type="text/stylesheet" href="bootstrap/css/bootstrap.css">
+</head>
+
+<body onload="fecthcateg()">
+    <h1>Criar nova</h1>
+    Categoria: <input type="text" id="novaCateg">
+    <button id="adicionar" onclick="addCategoria()">Adicionar</button>
+    <hr>
+    <h2>Editar</h2>
+    <div class="row">
+        <div class="col-md-10">
+            <select id="listCateg" size="6" onchange="carregaCateg(this.value)">
+            </select>
+        </div>
+        <div class="col-md-10">
+            <input type="text" id="updtCateg" >
+            <button id="alterar" onclick="updtCategoria">Alterar</button>
+        </div>
+    </div>
+    <hr>
+    <h2>Lista de Categorias</h2>
+    <ul id="lista"></ul>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript">
+        var server = "https://randomuser.me/api/";
+      
+        function fecthcateg() {console.log("dt");
+            $.getJSON(server + "?results=10")
+                .done(function (dt) {
+                    //console.log(dt);
+                    var el;
+                    console.log(dt.results[0].name.first);
+                    for (i in dt.results) {
+                        el = document.createElement("li");
+                        el.innerHTML = dt.results[i].id.value;
+                        $("#lista").append(el);
+                        el = document.createElement("option");
+                        el.innerHTML = dt.results[i].name.first+" "+dt.results[i].name.last;
+                        
+                       el.value = i;
+                       console.log(el.value);
+                        $("#listCateg").append(el);
+                    }
+                })
+        }
+        function addCategoria(index) {
+            $.post(server + "category/" + index, {
+
+                name: $("#novaCateg").val()
+            });
+        }
+        var updtIndex = 0;
+
+        function carregaCateg(index) {
+            console.log(index);
+            updtIndex = index;
+            $.getJSON(server + "?value=" +  index )
+                .done(function (dt) {
+                    $("#updtCateg").val(dt.results[0].name.first);
+                    console.log(dt.results[0].name.first);
+                })
+
+                console.log($("#updtCateg").val());
+        }
+        function updtCategoria(updtIndex) {
+            $.post(server + "?seed=" + updtIndex, {
+                "first": $("#updtCateg").val()
+                
+            })
+            console.log($.post(server + "?seed=" + updtIndex, {
+                "first": $("#updtCateg").val()
+                
+            }));
+        }
+    </script>
+</body>
+
+</html>
